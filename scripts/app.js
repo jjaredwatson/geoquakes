@@ -20,4 +20,16 @@ function onSuccess(data){
   }
 };
 
+var map;
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 30.2682, lng: -97.74295},
+    zoom: 8
+  });
+  $('#map').append(map);
+}
+initMap();
+
+
+//end of document ready
 });
