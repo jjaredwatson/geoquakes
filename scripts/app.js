@@ -1,31 +1,28 @@
 // define globals
 var weekly_quakes_endpoint = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson";
 var map;
-
+var markers = [];
 $(document).ready(function() {
   console.log("Let's get coding!");
   // CODE IN HERE!
-  function initMap() {
-    var latLng = {lat: 30.2682, lng: -97.74295};
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: latLng,
-      zoom: 8
-    });
-    $('#map').append(map);
-  }
+
+    initMap();
 
 
-  initMap();
-
-$.ajax({
-  method: "GET",
-
-  url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson',
-
-  dataType: 'json',
-
-  success: onSuccess
-});
+              $.ajax({
+                method: "GET",
+                url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson',
+                dataType: 'json',
+                success: onSuccess
+              });
+        function initMap() {
+          var latLng = {lat: 30.2682, lng: -97.74295};
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: latLng,
+            zoom: 8
+          });
+          $('#map').append(map);
+        }
 
 $('#month').on('click', function (event){
   $('#quakes').empty();
@@ -45,27 +42,34 @@ $('#day').on('click', function (event){
     method: "GET",
     url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
     dataType: 'json',
-    success: onSuccess
+    success: onSuccess,
   });
 });
 
 function onSuccess(data){
+    $('#map').empty();
+    initMap();
     for (var i = 0; i < data.features.length; i++) {
-      var now = new Date();
-      var then = data.features[i].properties.time;
-      var timeSince = Math.floor((now - then)/(60*60*1000));
-      if (timeSince === 1) {
-        var timeHolder = ' hour ago ';
-      } else if (timeSince === 0){
-        timeSince = 'Happening Now';
-        timeHolder = ' ';
-      } else {
-        timeHolder = ' hours ago ';
-      }
-      var time = timeSince + timeHolder;
+                    var now = new Date();
+                    var then = data.features[i].properties.time;
+                    var timeSince = Math.floor((now - then)/(60*60*1000));
+                    if (timeSince === 1) {
+                      var timeHolder = ' hour ago ';
+                    } else if (timeSince === 0){
+                      timeSince = 'Happening Now';
+                      timeHolder = ' ';
+                    } else {
+                      timeHolder = ' hours ago ';
+                    }
+var time = timeSince + timeHolder;
+
+
       var title = data.features[i].properties.place;
-      // var titleArray = title.split(' ').splice(3,title.length);
-      // console.log(titleArray[2]);
+      // var titleArray = title.split(' ').slice(3,title.length);
+      var titleArray = title.split(' ');
+      titleArray = titleArray.slice(3,titleArray.length);
+      title = titleArray.join(" ");
+      console.log(titleArray);
 
         var littleQuake = {
                     url: 'https://media.giphy.com/media/JQSlcR2Ivvr8I/giphy.gif',
@@ -110,6 +114,7 @@ function onSuccess(data){
           animation: google.maps.Animation.DROP,
           icon: customMark
         });
+        markers.push(marker);
       }
     }
 
