@@ -6,3 +6,15 @@
   height: 600px;
   margin-top: 20px;
 }
+
+.smallQuake {
+  color: yellow;
+}
+
+.mediumQuake {
+  color: orange;
+}
+
+.run {
+  color: red;
+}
