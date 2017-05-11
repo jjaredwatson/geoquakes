@@ -27,6 +27,28 @@ $.ajax({
   success: onSuccess
 });
 
+$('#month').on('click', function (event){
+  $('#quakes').empty();
+  event.preventDefault();
+  $.ajax({
+    method: "GET",
+    url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson',
+    dataType: 'json',
+    success: onSuccess
+  });
+});
+
+$('#day').on('click', function (event){
+  $('#quakes').empty();
+  event.preventDefault();
+  $.ajax({
+    method: "GET",
+    url: 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson',
+    dataType: 'json',
+    success: onSuccess
+  });
+});
+
 function onSuccess(data){
     for (var i = 0; i < data.features.length; i++) {
       var now = new Date();
@@ -41,28 +63,56 @@ function onSuccess(data){
         timeHolder = ' hours ago ';
       }
       var time = timeSince + timeHolder;
-      var title = data.features[i].properties.title;
+      var title = data.features[i].properties.place;
+      // var titleArray = title.split(' ').splice(3,title.length);
+      // console.log(titleArray[2]);
 
+        var littleQuake = {
+                    url: 'https://media.giphy.com/media/JQSlcR2Ivvr8I/giphy.gif',
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(0,0) // size: new google.maps.Size(71, 71)
+                        };
+        var medQuake = {
+                    url: 'https://media.giphy.com/media/mbG6891BV7QMo/giphy.gif',
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(0,0)
+          // size: new google.maps.Size(71, 71)
+                        };
+        var hugeQuake = {
+                    url: 'https://media.giphy.com/media/YA6dmVW0gfIw8/giphy.gif', // url
+                    scaledSize: new google.maps.Size(50, 50), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(0,0)
+                        };
     var magNumber = data.features[i].properties.mag;
     var className;
+    var customMark;
           if (magNumber <= 4) {
             className = 'smallQuake';
+            customMark = littleQuake;
           } else if (magNumber > 4 && magNumber <= 5) {
             className = 'mediumQuake';
+            customMark = medQuake;
           } else {
             className = 'run';
+            customMark = hugeQuake;
           }
-    $('#info').append(`<p class=${className}>` + time + title + '</p>');
-
+          // $(customMark).addClass('marker');
+    $('#quakes').append(`<p class=${className}>` + time + title + '</p>');
         var coords = data.features[i].geometry.coordinates;
         var latLng = new google.maps.LatLng(coords[1],coords[0]);
         var marker = new google.maps.Marker({
           position: latLng,
           map: map,
-          icon: './images/earthquake.png'
+          optimized: false,
+          animation: google.maps.Animation.DROP,
+          icon: customMark
         });
       }
     }
+
 
 
 

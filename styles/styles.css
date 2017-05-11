@@ -1,3 +1,7 @@
+html, body {
+  background: grey;
+}
+
 .container {
   padding-bottom: 50px;
 }
@@ -17,4 +21,13 @@
 
 .run {
   color: red;
+}
+
+.marker {
+  height: 20px;
+  width: 20px;
+}
+
+#map img {
+  border-radius: 30px;
 }
